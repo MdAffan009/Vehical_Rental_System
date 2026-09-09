@@ -1,4 +1,5 @@
 # 🚗 Vehicle Rental System
+
 ### A C++ Object-Oriented Programming Micro-Project
 
 ---
@@ -6,6 +7,8 @@
 ## 📌 About the Project
 
 The **Vehicle Rental System** is a console-based C++ application that simulates the core operations of a vehicle rental business. It allows staff to manage vehicles, register customers, handle rentals and returns, and generate billing — all through a menu-driven interface. The project is built around the core principles of **Object-Oriented Programming (OOP)**, making it a practical, hands-on demonstration of how C++ is used in real-world software design.
+
+> All data is stored in-memory during the program's runtime using STL containers. No external database or file storage is required.
 
 ---
 
@@ -17,7 +20,6 @@ The **Vehicle Rental System** is a console-based C++ application that simulates 
 - Handle the full rental lifecycle — booking, returning, and billing.
 - Calculate rental costs based on vehicle type and duration.
 - Track vehicle availability in real time (Available / Rented / Under Maintenance).
-- Store and retrieve data using file handling for basic persistence.
 
 ---
 
@@ -34,7 +36,6 @@ The **Vehicle Rental System** is a console-based C++ application that simulates 
 | **Availability Tracking** | View which vehicles are available, rented, or in maintenance |
 | **Rental History** | View past rentals for record-keeping |
 | **Search & Filter** | Find vehicles by type, model, or availability |
-| **File Storage** | Save and load data using `.txt` files |
 
 ---
 
@@ -43,8 +44,8 @@ The **Vehicle Rental System** is a console-based C++ application that simulates 
 | Concept | Where It Appears |
 |---|---|
 | **Encapsulation** | Private data members in all classes with public getters/setters |
-| **Inheritance** | `Car`, `Truck`, and `Motorcycle` inherit from base `Vehicle` class |
-| **Polymorphism** | `calculateCost()` overridden in each vehicle subclass |
+| **Inheritance** | `Car`, `Truck`, and `Motorcycle` inherit from the base `Vehicle` class |
+| **Polymorphism** | `calculateCost()` is overridden in each vehicle subclass |
 | **Abstraction** | Abstract base class `Vehicle` with pure virtual functions |
 | **Composition** | `Rental` class contains `Vehicle` and `Customer` objects |
 
@@ -52,22 +53,30 @@ The **Vehicle Rental System** is a console-based C++ application that simulates 
 
 ## 👥 Team Division & Steps to Complete
 
-The project is divided into **4 modules**, each assigned to a team member or pair. All modules should be built in parallel and integrated in the final step.
+The project is split into **4 modules + integration**. Module 1 must be completed first since the other modules depend on it. Modules 2 and 3 can then be built in parallel. Module 4 should be started after the core modules are mostly complete.
 
 ---
 
 ### 🔷 Module 1 — Vehicle & Class Hierarchy *(Member A)*
 
-**Goal:** Build the core class structure for all vehicles.
+> ⚠️ Start here first. All other modules depend on this one.
+
+**Estimated Lines:** ~150–200
 
 **Tasks:**
+
 1. Create an abstract base class `Vehicle` with:
-   - Attributes: `vehicleID`, `brand`, `model`, `year`, `dailyRate`, `status` (Available / Rented / Maintenance)
+   - Attributes: `vehicleID`, `brand`, `model`, `year`, `dailyRate`, `status`
+   - Status options: `Available`, `Rented`, `Maintenance`
    - Pure virtual method: `calculateCost(int days)`
    - Getters and setters for all attributes
+   - `displayInfo()` method to print vehicle details
+
 2. Create derived classes: `Car`, `Truck`, `Motorcycle`
-   - Each overrides `calculateCost()` with its own rate logic (e.g., trucks cost 1.5× base rate)
-3. Write and test each class independently using a small `main()` test file
+   - Each overrides `calculateCost()` with its own logic
+   - Example: Trucks charge 1.5× the base daily rate, while Motorcycles charge 0.8×
+
+3. Test each class with a small standalone `main()` before handing off.
 
 **Deliverable:** `vehicle.h`, `car.h`, `truck.h`, `motorcycle.h` + their `.cpp` files
 
@@ -75,18 +84,21 @@ The project is divided into **4 modules**, each assigned to a team member or pai
 
 ### 🔷 Module 2 — Customer Management *(Member B)*
 
-**Goal:** Handle all customer-related data and operations.
+> Can be started once Module 1's `vehicle.h` is ready.
+
+**Estimated Lines:** ~120–160
 
 **Tasks:**
+
 1. Create a `Customer` class with:
    - Attributes: `customerID`, `name`, `phone`, `email`, `licenseNumber`
    - Getters, setters, and a `displayInfo()` method
-2. Create a `CustomerManager` class that supports:
+
+2. Create a `CustomerManager` class with a `vector<Customer>` internally, supporting:
    - `addCustomer()` — register a new customer
-   - `removeCustomer(id)` — delete a customer record
-   - `searchCustomer(id or name)` — find a customer
-   - `displayAllCustomers()` — list all registered customers
-3. Store the customer list in a `vector<Customer>`
+   - `removeCustomer(id)` — delete by ID
+   - `searchCustomer(id)` — find and return a customer
+   - `displayAllCustomers()` — list everyone
 
 **Deliverable:** `customer.h`, `customerManager.h` + their `.cpp` files
 
@@ -94,84 +106,127 @@ The project is divided into **4 modules**, each assigned to a team member or pai
 
 ### 🔷 Module 3 — Rental, Return & Billing *(Member C)*
 
-**Goal:** Manage the rental lifecycle and generate bills.
+> Can be started once Module 1's `vehicle.h` is ready.
+
+**Estimated Lines:** ~200–250
 
 **Tasks:**
+
 1. Create a `Rental` class with:
-   - Attributes: `rentalID`, `customerID`, `vehicleID`, `startDate`, `numberOfDays`, `totalCost`, `isPaid`
-   - Method: `generateBill()` — prints a formatted receipt
-2. Create a `RentalManager` class that supports:
-   - `rentVehicle(customerID, vehicleID, days)` — book a vehicle, change its status to "Rented"
-   - `returnVehicle(rentalID)` — mark vehicle as "Available", calculate and display the bill
-   - `viewRentalHistory()` — list all past and active rentals
-3. Validate that a vehicle is available before booking
+   - Attributes: `rentalID`, `customerID`, `vehicleID`, `numberOfDays`, `totalCost`, `isReturned`
+   - Method: `generateBill()` — prints a formatted receipt to the console
+
+2. Create a `RentalManager` class with a `vector<Rental>` internally, supporting:
+   - `rentVehicle(customerID, vehicleID, days)` — book a vehicle and set its status to `Rented`
+   - `returnVehicle(rentalID)` — mark the vehicle as `Available`, calculate and display the bill
+   - `viewRentalHistory()` — list all active and past rentals
+
+3. Add validation:
+   - Check that the vehicle exists.
+   - Check that the vehicle status is `Available` before allowing a booking.
+   - Validate that the rental duration is greater than zero.
 
 **Deliverable:** `rental.h`, `rentalManager.h` + their `.cpp` files
 
 ---
 
-### 🔷 Module 4 — File Handling, Search & Main Menu *(Member D)*
+### 🔷 Module 4 — Search, Filter & Main Menu *(Member D)*
 
-**Goal:** Connect everything together with a menu, search system, and file storage.
+> Start after Modules 1, 2, and 3 are mostly done.
+
+**Estimated Lines:** ~150–180
 
 **Tasks:**
-1. Implement file handling using `fstream`:
-   - Save and load `vehicles.txt` and `customers.txt` on startup/exit
-   - Save rental records to `rentals.txt`
-2. Implement search and filter functions:
-   - Search vehicles by type, model, or availability status
-   - Search customers by name or ID
-3. Build the main console menu with options like:
-   ```
-   ===== Vehicle Rental System =====
-   1. Manage Vehicles
-   2. Manage Customers
-   3. Rent a Vehicle
-   4. Return a Vehicle
-   5. View Rental History
-   6. Search Vehicles
-   7. Exit
-   ```
-4. Integrate all modules and test end-to-end scenarios
 
-**Deliverable:** `fileHandler.h`, `search.h`, `main.cpp`
+1. Implement search and filter functions:
+   - Search vehicles by type (`Car`, `Truck`, `Motorcycle`)
+   - Filter vehicles by availability status
+   - Search customers by name or ID
+
+2. Build the main console menu loop:
+
+```text
+===== Vehicle Rental System =====
+
+1. Manage Vehicles
+2. Manage Customers
+3. Rent a Vehicle
+4. Return a Vehicle
+5. View Rental History
+6. Search Vehicles
+7. Exit
+```
+
+3. Wire up all managers (`CustomerManager`, `RentalManager`, and vehicle lists) inside `main.cpp`.
+
+4. Handle invalid inputs gracefully, including:
+   - Wrong vehicle ID
+   - Wrong customer ID
+   - Unavailable vehicle
+   - Invalid rental duration
+   - Invalid menu choice
+
+**Deliverable:** `search.h`, `search.cpp`, `main.cpp`
 
 ---
 
 ## 🔗 Integration & Testing (All Members Together)
 
-Once individual modules are ready:
+Once all modules are ready:
 
-1. Merge all files into a single project folder
-2. Resolve any naming conflicts or dependencies
-3. Test the full flow: Add vehicle → Register customer → Rent → Return → View bill → Check history
-4. Fix any bugs found during integration
-5. Clean up the code and add comments
+1. Merge all files into a single project folder.
+2. Resolve any naming conflicts or include dependencies.
+3. Test the full flow end-to-end:
+
+   **Add a vehicle → Register a customer → Rent → Return → View bill → Check history**
+
+4. Fix any bugs found during integration.
+5. Add comments and clean up the code.
+6. Verify that all modules compile successfully together.
 
 ---
 
 ## 📁 Suggested Project Structure
 
-```
+```text
 VehicleRentalSystem/
 │
 ├── main.cpp
-├── vehicle.h / vehicle.cpp
-├── car.h / car.cpp
-├── truck.h / truck.cpp
-├── motorcycle.h / motorcycle.cpp
-├── customer.h / customer.cpp
-├── customerManager.h / customerManager.cpp
-├── rental.h / rental.cpp
-├── rentalManager.h / rentalManager.cpp
-├── fileHandler.h / fileHandler.cpp
-├── search.h / search.cpp
 │
-└── data/
-    ├── vehicles.txt
-    ├── customers.txt
-    └── rentals.txt
+├── vehicle.h
+├── vehicle.cpp
+├── car.h
+├── car.cpp
+├── truck.h
+├── truck.cpp
+├── motorcycle.h
+├── motorcycle.cpp
+│
+├── customer.h
+├── customer.cpp
+├── customerManager.h
+├── customerManager.cpp
+│
+├── rental.h
+├── rental.cpp
+├── rentalManager.h
+├── rentalManager.cpp
+│
+├── search.h
+└── search.cpp
 ```
+
+---
+
+## 📊 Estimated Line Count
+
+| Module | Owner | Estimated Lines |
+|---|---|---:|
+| Vehicle & Class Hierarchy | Member A | 150–200 |
+| Customer Management | Member B | 120–160 |
+| Rental, Return & Billing | Member C | 200–250 |
+| Search, Filter & Main Menu | Member D | 150–180 |
+| **Total** | | **~620–790 lines** |
 
 ---
 
@@ -180,6 +235,6 @@ VehicleRentalSystem/
 - **Language:** C++ (C++11 or later)
 - **Compiler:** g++ / MinGW / MSVC
 - **IDE:** VS Code, Code::Blocks, or Dev-C++
-- **Libraries:** Standard C++ STL (`vector`, `fstream`, `string`, `iostream`)
+- **Libraries:** Standard C++ STL only (`vector`, `string`, `iostream`)
 
 ---
