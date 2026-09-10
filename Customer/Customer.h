@@ -11,7 +11,7 @@ private:
     int age;
     std::string phone;
     std::string email;
-    std::string licenseNumber; // Actual license number string, e.g. "DL-2023-49201"
+    std::string licenseNumber; // Actual license number string
 
 public:
     // Constructor
