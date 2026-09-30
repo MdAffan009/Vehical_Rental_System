@@ -617,30 +617,34 @@ void displayAvailableVehicles(const vector<Vehicle *> &fleet)
     if (!foundCar)
         cout << "  No cars available." << endl;
 
-    cout << "\n--- MOTORCYCLES ---" << endl;
+    cout << "\n--- MOTORCYCLES --- [20% Discount! You pay $0.80 per $1.00]" << endl;
     bool foundBike = false;
     for (size_t i = 0; i < fleet.size(); i++)
     {
         if (getVehicleType(fleet[i]) == "Motorcycle" && fleet[i]->getStatus() == "Available")
         {
+            double discountedRate = fleet[i]->getDailyRate() * 0.8;
             cout << "  [" << i + 1 << "] " << fleet[i]->getBrand() << " "
                  << fleet[i]->getModel() << " (" << fleet[i]->getYear() << ") - $"
-                 << fixed << setprecision(2) << fleet[i]->getDailyRate() << "/day" << endl;
+                 << fixed << setprecision(2) << fleet[i]->getDailyRate() << "/day"
+                 << " --> You pay: $" << discountedRate << "/day (20% off)" << endl;
             foundBike = true;
         }
     }
     if (!foundBike)
         cout << "  No motorcycles available." << endl;
 
-    cout << "\n--- TRUCKS ---" << endl;
+    cout << "\n--- TRUCKS --- [50% Surcharge applies on listed rate]" << endl;
     bool foundTruck = false;
     for (size_t i = 0; i < fleet.size(); i++)
     {
         if (getVehicleType(fleet[i]) == "Truck" && fleet[i]->getStatus() == "Available")
         {
+            double surchargedRate = fleet[i]->getDailyRate() * 1.5;
             cout << "  [" << i + 1 << "] " << fleet[i]->getBrand() << " "
                  << fleet[i]->getModel() << " (" << fleet[i]->getYear() << ") - $"
-                 << fixed << setprecision(2) << fleet[i]->getDailyRate() << "/day" << endl;
+                 << fixed << setprecision(2) << fleet[i]->getDailyRate() << "/day"
+                 << " --> You pay: $" << surchargedRate << "/day (+50% surcharge)" << endl;
             foundTruck = true;
         }
     }
@@ -720,7 +724,12 @@ void menuRentVehicle(vector<Vehicle *> &fleet, CustomerManager &cm, RentalManage
             matchingVehicles.push_back(v);
             cout << "  [" << counter << "] " << v->getBrand() << " " << v->getModel()
                  << " (" << v->getYear() << ") - $" << fixed << setprecision(2)
-                 << v->getDailyRate() << "/day" << endl;
+                 << v->getDailyRate() << "/day";
+            if (selectedType == "Motorcycle")
+                cout << " --> You pay: $" << v->getDailyRate() * 0.8 << "/day (20% off)";
+            else if (selectedType == "Truck")
+                cout << " --> You pay: $" << v->getDailyRate() * 1.5 << "/day (+50% surcharge)";
+            cout << endl;
             counter++;
         }
     }
